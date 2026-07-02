@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registros aprobados - Manipulación de alimentos</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="dashboard-page">
+    <header>
+      <h1>Registros aprobados</h1>
+      <p>Participantes que superaron el mínimo de 14 preguntas correctas.</p>
+      <div class="actions">
+        <a class="button secondary" href="/">Volver al curso</a>
+      </div>
+    </header>
+
+    <main>
+      <div class="dashboard-filter-panel hidden" id="dashboard-filter-panel">
+        <div class="filter-card">
+          <div class="filter-row">
+            <label>
+              Nombre
+              <input type="text" id="filter-nombre" placeholder="Buscar por nombre" />
+            </label>
+            <label>
+              DNI
+              <input type="text" id="filter-dni" placeholder="Buscar por DNI" />
+            </label>
+            <label>
+              Correo
+              <input type="text" id="filter-email" placeholder="Buscar por correo" />
+            </label>
+            <label>
+              Centro
+              <input type="text" id="filter-centro" placeholder="Buscar por centro" />
+            </label>
+            <div class="filter-actions">
+              <button class="button" id="filter-apply">Aplicar</button>
+              <button class="button secondary" id="filter-clear">Borrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="button filter-toggle" id="filter-toggle" type="button" aria-expanded="false" aria-controls="dashboard-filter-panel">
+        <span class="filter-icon">&#x1F50D;</span>
+        Filtro
+      </button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>DNI</th>
+            <th>Correo</th>
+            <th>Centro</th>
+            <th>Correctas</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty-message" class="empty" hidden>
+        No hay registros aprobados todavía. El primer participante se guardará cuando supere 14 aciertos.
+      </div>
+    </main>
+
+    <script>
+      function getFilterParams() {
+        const nombre = document.getElementById('filter-nombre').value.trim();
+        const dni = document.getElementById('filter-dni').value.trim();
+        const email = document.getElementById('filter-email').value.trim();
+        const centro = document.getElementById('filter-centro').value.trim();
+        const params = new URLSearchParams();
+        if (nombre) params.set('nombre', nombre);
+        if (dni) params.set('dni', dni);
+        if (email) params.set('email', email);
+        if (centro) params.set('centro', centro);
+        return params;
+      }
+
+      async function loadRegistros() {
+        const params = getFilterParams();
+        const response = await fetch('/api/registros' + (params.toString() ? `?${params.toString()}` : ''));
+        const data = await response.json();
+        const rows = document.getElementById('rows');
+        const emptyMessage = document.getElementById('empty-message');
+
+        rows.innerHTML = '';
+        if (!data.length) {
+          emptyMessage.hidden = false;
+          return;
+        }
+
+        emptyMessage.hidden = true;
+        data.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.nombre}</td>
+            <td>${item.dni}</td>
+            <td>${item.email}</td>
+            <td>${item.centro || ''}</td>
+            <td>${item.score}</td>
+            <td>${new Date(item.fecha).toLocaleString('es-ES')}</td>
+          `;
+          rows.appendChild(tr);
+        });
+      }
+
+      document.getElementById('filter-toggle').addEventListener('click', () => {
+        const panel = document.getElementById('dashboard-filter-panel');
+        const isHidden = panel.classList.toggle('hidden');
+        document.getElementById('filter-toggle').setAttribute('aria-expanded', String(!isHidden));
+      });
+
+      document.getElementById('filter-apply').addEventListener('click', () => {
+        loadRegistros();
+      });
+
+      document.getElementById('filter-clear').addEventListener('click', () => {
+        document.getElementById('filter-nombre').value = '';
+        document.getElementById('filter-dni').value = '';
+        document.getElementById('filter-email').value = '';
+        loadRegistros();
+      });
+
+      loadRegistros();
+    </script>
+  </body>
+</html>
