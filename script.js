@@ -106,6 +106,7 @@ if (form) {
       }
     } else {
       formCard.hidden = true;
+      alert(`No has superado el mínimo de aciertos. Has acertado ${score} de 26 preguntas. Vuelve a leer el PDF para intentarlo de nuevo.`);
       status.textContent = `Has obtenido ${score} aciertos. Debes superar 14 para poder guardar el registro. Vuelve a leer el PDF y pulsa “He leído el PDF”.`;
       showMessage('error', `No has superado el mínimo. Has acertado ${score} de 26 preguntas. Vuelve a leer el PDF para intentarlo de nuevo.`);
       form.reset();
