@@ -1,4 +1,6 @@
 import os
+import time
+import logging
 from flask import Flask, jsonify, request, send_file, Response, redirect, session
 from datetime import datetime
 from functools import wraps
@@ -9,6 +11,9 @@ import sqlite3
 from pathlib import Path
 from werkzeug.security import check_password_hash, generate_password_hash
 import sys
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-change-this-secret')
@@ -108,9 +113,29 @@ def admin_required(func):
     return wrapper
 
 
+def with_sqlite_retry(func, *args, retries=5, delay=0.5, **kwargs):
+    """Reintenta una operación de SQLite si la base de datos está bloqueada
+    (p. ej. varios workers de gunicorn arrancando a la vez)."""
+    last_error = None
+    for attempt in range(1, retries + 1):
+        try:
+            return func(*args, **kwargs)
+        except sqlite3.OperationalError as exc:
+            last_error = exc
+            if "locked" in str(exc).lower():
+                logger.warning(
+                    "SQLite bloqueada (intento %s/%s), reintentando en %.1fs: %s",
+                    attempt, retries, delay, exc,
+                )
+                time.sleep(delay)
+                continue
+            raise
+    raise last_error
+
+
 def init_db():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=10)
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -143,7 +168,7 @@ def init_db():
 
 
 def get_admin_user(username):
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         conn.row_factory = sqlite3.Row
         row = conn.execute(
             "SELECT id, username, password_hash, role, created_at FROM admin_users WHERE username = ?",
@@ -155,7 +180,7 @@ def get_admin_user(username):
 def create_default_admin():
     if not DEFAULT_ADMIN_USERNAME or not DEFAULT_ADMIN_PASSWORD:
         return
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT COUNT(*) FROM admin_users")
         count = cursor.fetchone()[0]
@@ -175,7 +200,7 @@ def create_default_admin():
 def create_admin_user(username, password, role='user'):
     if not username or not password:
         return False
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         cursor = conn.cursor()
         try:
             cursor.execute(
@@ -224,7 +249,7 @@ CENTROS = [
 ]
 
 def migrate_user_roles():
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         cursor = conn.cursor()
         cursor.execute("PRAGMA table_info(admin_users)")
         columns = [row[1] for row in cursor.fetchall()]
@@ -234,7 +259,7 @@ def migrate_user_roles():
 
 
 def migrate_registros_centro():
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         cursor = conn.cursor()
         cursor.execute("PRAGMA table_info(registros)")
         columns = [row[1] for row in cursor.fetchall()]
@@ -243,10 +268,14 @@ def migrate_registros_centro():
             conn.commit()
 
 
-init_db()
-migrate_user_roles()
-migrate_registros_centro()
-create_default_admin()
+try:
+    with_sqlite_retry(init_db)
+    with_sqlite_retry(migrate_user_roles)
+    with_sqlite_retry(migrate_registros_centro)
+    with_sqlite_retry(create_default_admin)
+except Exception:
+    logger.exception("Fallo al inicializar la base de datos en el arranque")
+    raise
 
 
 @app.get("/")
@@ -298,7 +327,7 @@ def get_registros():
         'centro': request.args.get('centro', '').strip(),
     }
     query, params = build_public_registros_query(filters)
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(query, params).fetchall()
     return jsonify([dict(row) for row in rows])
@@ -336,7 +365,7 @@ def create_registro():
     if not aprobado:
         return jsonify({"ok": False, "error": "No superó el mínimo de aciertos"}), 403
 
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         cursor = conn.cursor()
         cursor.execute(
             """
@@ -459,7 +488,7 @@ def admin_logout():
 @app.get("/api/admin/users")
 @login_required
 def get_admin_users():
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(
             "SELECT id, username, role, created_at FROM admin_users ORDER BY id DESC"
@@ -474,7 +503,7 @@ def delete_admin_user(user_id):
         return jsonify({"ok": False, "error": "Permisos insuficientes."}), 403
 
     username = session.get("username")
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT role FROM admin_users WHERE id = ?", (user_id,))
         row = cursor.fetchone()
@@ -522,7 +551,7 @@ def get_all_registros():
         'aprobado': request.args.get('aprobado', '').strip(),
     }
     query, params = build_admin_query(filters)
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(query, params).fetchall()
     return jsonify([dict(row) for row in rows])
@@ -531,7 +560,7 @@ def get_all_registros():
 @app.delete("/api/admin/registros/<int:registro_id>")
 @login_required
 def delete_registro(registro_id):
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         cursor = conn.cursor()
         cursor.execute("DELETE FROM registros WHERE id = ?", (registro_id,))
         deleted = cursor.rowcount
@@ -552,7 +581,7 @@ def export_csv():
         'aprobado': request.args.get('aprobado', '').strip(),
     }
     query, params = build_admin_query(filters)
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(DB_PATH, timeout=10) as conn:
         conn.row_factory = sqlite3.Row
         rows = conn.execute(query.replace('SELECT id, nombre, dni, email, centro, score, aprobado, fecha, respuestas', 'SELECT nombre, dni, email, centro, score, aprobado, fecha, respuestas'), params).fetchall()
 
