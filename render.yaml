@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: manipulacion-alimentos
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: SECRET_KEY
+        value: "cambia-esto-por-una-clave-segura"
+      - key: PORT
+        value: "10000"

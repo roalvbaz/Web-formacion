@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '10000:10000'
+    environment:
+      - PORT=10000
+      - SECRET_KEY=${SECRET_KEY:-change-me-secret}
+    volumes:
+      - ./:/app:cached
+    command: gunicorn app:app --bind 0.0.0.0:10000 --workers 3 --threads 4
