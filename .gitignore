@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Variables de entorno / secretos
+.env
+.env.local
+.env.*.local
+
+# Bases de datos
+*.sqlite3
+*.db
+database/
+
+# Archivos subidos/generados (excepto el PDF que necesitas)
+files/*
+!files/informacion.pdf
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores / IDEs
+.vscode/
+.idea/
+*.swp
+
+# Docker
+docker-compose.override.yml
