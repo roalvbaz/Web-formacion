@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Formacion</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="login-page">
+    <article class="login-card">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div class="brand-title">
+          <h1>Acceso</h1>
+          <p>Inicia sesión para poder acceder a la formación.</p>
+        </div>
+      </div>
+
+      <form action="/admin/login" method="post">
+        <label for="username">
+          Usuario
+          <input id="username" name="username" type="text" required />
+        </label>
+        <label for="password">
+          Contraseña
+          <input id="password" name="password" type="password" required />
+        </label>
+        <button type="submit">Entrar</button>
+      </form>
+
+      <div id="login-error" class="error" hidden>Usuario o contraseña incorrectos.</div>
+
+      <div class="login-footer">
+        <a href="/">Volver a la pantalla de capacitación</a>
+      </div>
+    </article>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('error') === '1') {
+        const errorBox = document.getElementById('login-error');
+        errorBox.hidden = false;
+      }
+    </script>
+  </body>
+</html>

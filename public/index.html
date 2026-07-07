@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formación en Manipulación de Alimentos</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">Capacitación profesional</p>
+        <h1>Formación en manipulación de alimentos</h1>
+        <p>
+          Una experiencia sencilla para enseñar normas básicas, higiene y seguridad
+          alimentaria con material visual y registro de participantes.
+        </p>
+        <div class="hero-buttons">
+
+          <a class="button" href="/dashboard">Registros aprobados</a>
+          <a class="button" id="admin-access-button" href="/admin" hidden style="display:none;">Acceso administrador</a>
+          <a class="button secondary" href="/admin/logout">Cerrar sesión</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="curso" class="section">
+        <div class="section-title">
+          <h2>Material de capacitación</h2>
+          <p>Consulta el PDF del curso y regístrate para recibir más información.</p>
+        </div>
+
+        <div class="content-grid">
+          <article class="card viewer-card">
+            <h3>Visor de PDF</h3>
+            <iframe
+              title="PDF de formación"
+              src="/files/informacion.pdf"
+              loading="lazy"
+            ></iframe>
+            <div class="pdf-actions">
+              <p>Lee el contenido del PDF y, cuando lo hayas revisado, pulsa el botón para mostrar el cuestionario.</p>
+              <button type="button" id="show-form-button" class="secondary-button">He leído el PDF</button>
+            </div>
+          </article>
+
+          <article class="card form-card" id="form-card" hidden>
+            <h3>Cuestionario de formación</h3>
+            <p class="form-intro">
+              Debes acertar más de 14 respuestas para poder guardar el registro.
+            </p>
+            <form id="cuestionario-appcc" class="quiz-form">
+              <fieldset>
+                <legend>Datos del participante</legend>
+
+                <label for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" name="nombre" required />
+
+                <label for="dni">NIF/DNI</label>
+                <input type="text" id="dni" name="dni" required />
+
+                <label for="email">Correo</label>
+                <input type="email" id="email" name="email" required />
+
+                <label for="centro">Centro</label>
+                <select id="centro" name="centro" required>
+                  <option value="">Selecciona un centro</option>
+                  <option value="CD Zegama">CD Zegama</option>
+                  <option value="CD Legazpi">CD Legazpi</option>
+                  <option value="CD Alda">CD Alda</option>
+                  <option value="Segura">Segura</option>
+                  <option value="Irun">Irun</option>
+                  <option value="Egia">Egia</option>
+                  <option value="URTMS Victoria Enea">URTMS Victoria Enea</option>
+                  <option value="Legazpi">Legazpi</option>
+                  <option value="Debagioena">Debagioena</option>
+                  <option value="SSGG">SSGG</option>
+                  <option value="Egiluze">Egiluze</option>
+                  <option value="Bilbao">Bilbao</option>
+                  <option value="Sopuerta">Sopuerta</option>
+                  <option value="Markina">Markina</option>
+                  <option value="Otxandio">Otxandio</option>
+                  <option value="Orozko">Orozko</option>
+                  <option value="Arrotegi">Arrotegi</option>
+                  <option value="Oizpe">Oizpe</option>
+                  <option value="Trucios">Trucios</option>
+                  <option value="Urduliz">Urduliz</option>
+                  <option value="Bernedo">Bernedo</option>
+                  <option value="Lodosa">Lodosa</option>
+                  <option value="Andosilla">Andosilla</option>
+                  <option value="Mendavia">Mendavia</option>
+                  <option value="Unx">Unx</option>
+                  <option value="Montesclaros">Montesclaros</option>
+                  <option value="Cicero">Cicero</option>
+                </select>
+              </fieldset>
+
+              <fieldset>
+                <legend>1) Si en una tortilla hay 2 bacterias, y la dejamos a temperatura ambiente durante cuatro horas, al cabo de ese tiempo la tortilla tendrá:</legend>
+                <label><input type="radio" name="p1" value="a" /> a) Las mismas bacterias</label>
+                <label><input type="radio" name="p1" value="b" /> b) Menos bacterias</label>
+                <label><input type="radio" name="p1" value="c" /> c) 64 bacterias</label>
+                <label><input type="radio" name="p1" value="d" /> d) 4.096 bacterias</label>
+                <label><input type="radio" name="p1" value="e" /> e) 8.192 bacterias</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>2) De entre los seres vivos que pueden estar presentes en un alimento, los responsables de la mayor parte de las toxiinfecciones alimentarias son:</legend>
+                <label><input type="radio" name="p2" value="a" /> a) Los virus</label>
+                <label><input type="radio" name="p2" value="b" /> b) Las bacterias</label>
+                <label><input type="radio" name="p2" value="c" /> c) Los hongos</label>
+                <label><input type="radio" name="p2" value="d" /> d) Los gusanos</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>3) Cuando se consume un alimento en mal estado, los síntomas de la gastroenteritis pueden aparecer al cabo de:</legend>
+                <label><input type="radio" name="p3" value="a" /> a) unas horas</label>
+                <label><input type="radio" name="p3" value="b" /> b) unos días</label>
+                <label><input type="radio" name="p3" value="c" /> c) unas semanas</label>
+                <label><input type="radio" name="p3" value="d" /> d) todas las anteriores son posibles</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>4) ¿Qué grupos de población están más expuestos a sufrir intoxicaciones y toxiinfecciones alimentarias?</legend>
+                <label><input type="radio" name="p4" value="a" /> a) Niños</label>
+                <label><input type="radio" name="p4" value="b" /> b) Ancianos</label>
+                <label><input type="radio" name="p4" value="c" /> c) Enfermos</label>
+                <label><input type="radio" name="p4" value="d" /> d) Mujeres embarazadas</label>
+                <label><input type="radio" name="p4" value="e" /> e) Todas las anteriores</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>5) En las cámaras:</legend>
+                <label><input type="radio" name="p5" value="a" /> a) Has de mantener los alimentos cocinados bajo las baldas de los crudos.</label>
+                <label><input type="radio" name="p5" value="b" /> b) No debes cerrar del todo los envases de los alimentos para evitar que les salga moho.</label>
+                <label><input type="radio" name="p5" value="c" /> c) El personal no puede guardar alimentos propios aunque estén en buen estado, bien identificados, y agrupados.</label>
+                <label><input type="radio" name="p5" value="d" /> d) Ninguna de las anteriores es cierta</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>6) Indica junto a cada uno de ellos si se trata de un peligro FÍSICO, QUÍMICO o BIOLÓGICO:</legend>
+
+                <p>a) Que aparezca un pelo en la sopa</p>
+                <label><input type="radio" name="p6a" value="fisico" /> Físico</label>
+                <label><input type="radio" name="p6a" value="quimico" /> Químico</label>
+                <label><input type="radio" name="p6a" value="biologico" /> Biológico</label>
+
+                <p>b) Que una tortilla tenga Salmonella</p>
+                <label><input type="radio" name="p6b" value="fisico" /> Físico</label>
+                <label><input type="radio" name="p6b" value="quimico" /> Químico</label>
+                <label><input type="radio" name="p6b" value="biologico" /> Biológico</label>
+
+                <p>c) Que queden restos de lavavajillas en los platos</p>
+                <label><input type="radio" name="p6c" value="fisico" /> Físico</label>
+                <label><input type="radio" name="p6c" value="quimico" /> Químico</label>
+                <label><input type="radio" name="p6c" value="biologico" /> Biológico</label>
+
+                <p>d) Que a un residente hipertenso se le sirva algo con demasiada sal</p>
+                <label><input type="radio" name="p6d" value="fisico" /> Físico</label>
+                <label><input type="radio" name="p6d" value="quimico" /> Químico</label>
+                <label><input type="radio" name="p6d" value="biologico" /> Biológico</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>7) Si te pregunta un familiar qué alérgenos contiene lo que va a comer el residente ese día, ¿Dónde lo puedes consultar?</legend>
+                <label><input type="radio" name="p7" value="a" /> a) En la receta</label>
+                <label><input type="radio" name="p7" value="b" /> b) En dirección</label>
+                <label><input type="radio" name="p7" value="c" /> c) En el listado de alérgenos por plato en cocina y/o comedor</label>
+                <label><input type="radio" name="p7" value="d" /> d) Ninguna de las anteriores</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>8) Puedes pensar que eres portador asintomático:</legend>
+                <label><input type="radio" name="p8" value="a" /> a) Cuando has consumido algo que a otro/s les ha sentado mal</label>
+                <label><input type="radio" name="p8" value="b" /> b) Cuando convives en el hogar con alguien que está con gastroenteritis</label>
+                <label><input type="radio" name="p8" value="c" /> c) Las dos anteriores</label>
+                <label><input type="radio" name="p8" value="d" /> d) Ninguna de las anteriores</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>9) ¿Qué precauciones debe adoptar un manipulador cuando sufre un cuadro gastroenterítico para evitar contaminar el alimento que manipula?</legend>
+                <label><input type="radio" name="p9" value="a" /> a) Lavarse las manos después de ir al servicio</label>
+                <label><input type="radio" name="p9" value="b" /> b) Ayunar durante unos días</label>
+                <label><input type="radio" name="p9" value="c" /> c) Las dos anteriores</label>
+                <label><input type="radio" name="p9" value="d" /> d) Ninguna de las anteriores</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>10) Las uñas de un manipulador de alimentos han de estar:</legend>
+                <label><input type="radio" name="p10" value="a" /> a) Cortas</label>
+                <label><input type="radio" name="p10" value="b" /> b) Limpias</label>
+                <label><input type="radio" name="p10" value="c" /> c) Sin pintar</label>
+                <label><input type="radio" name="p10" value="d" /> d) Todas las anteriores</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>11) La información sobre qué particularidades tiene la dieta de cada residente del comedor y dónde se sienta la puedes encontrar:</legend>
+                <label><input type="radio" name="p11" value="a" /> a) En recepción</label>
+                <label><input type="radio" name="p11" value="b" /> b) En la puerta de su dormitorio</label>
+                <label><input type="radio" name="p11" value="c" /> c) En los comedores en los planos de ubicación de los residentes en las mesas</label>
+                <label><input type="radio" name="p11" value="d" /> d) En todas las anteriores</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>12) ¿Qué fechas hay que marcar en los alimentos que se manejan en cocina y office?:</legend>
+                <label><input type="radio" name="p12" value="a" /> a) La fecha de apertura</label>
+                <label><input type="radio" name="p12" value="b" /> b) La fecha de recepción</label>
+                <label><input type="radio" name="p12" value="c" /> c) La fecha de cocinado</label>
+                <label><input type="radio" name="p12" value="d" /> d) La a) y la c)</label>
+                <label><input type="radio" name="p12" value="e" /> e) Ninguna de las anteriores</label>
+              </fieldset>
+
+              <fieldset>
+                <legend>Verdadero o falso</legend>
+
+                <p>13) Conviene mezclar detergente y desinfectante en el mismo agua de fregar.</p>
+                <label><input type="radio" name="p13" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p13" value="f" /> Falso</label>
+
+                <p>14) No se debe trasvasar detergentes o desinfectantes a envases alimentarios.</p>
+                <label><input type="radio" name="p14" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p14" value="f" /> Falso</label>
+
+                <p>15) Es obligatorio para los manipuladores de alimentos utilizar en todo momento guantes.</p>
+                <label><input type="radio" name="p15" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p15" value="f" /> Falso</label>
+
+                <p>16) En caso de herida o corte en las manos es obligatorio el uso de vendaje adecuado y guante o dedil.</p>
+                <label><input type="radio" name="p16" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p16" value="f" /> Falso</label>
+
+                <p>17) Toda la ropa debe quedar en el interior de las taquillas del vestuario, no se puede dejar calzado en el suelo ni sobre las taquillas, pero sí en otros espacios especialmente habilitados para ello.</p>
+                <label><input type="radio" name="p17" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p17" value="f" /> Falso</label>
+
+                <p>18) El personal que trabaja en cocina no puede llevar anillos ni pendientes.</p>
+                <label><input type="radio" name="p18" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p18" value="f" /> Falso</label>
+
+                <p>19) El personal que trabaja en la cocina debe usar gorro.</p>
+                <label><input type="radio" name="p19" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p19" value="f" /> Falso</label>
+
+                <p>20) Es el personal de administración el que debe rellenar los registros, no el personal de cocina y de comedor.</p>
+                <label><input type="radio" name="p20" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p20" value="f" /> Falso</label>
+
+                <p>21) Al congelar un alimento conseguimos destruir las bacterias que contiene.</p>
+                <label><input type="radio" name="p21" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p21" value="f" /> Falso</label>
+
+                <p>22) Un portador asintomático es una persona que está enferma pero no transmite la enfermedad.</p>
+                <label><input type="radio" name="p22" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p22" value="f" /> Falso</label>
+
+                <p>23) Los detergentes y desinfectantes no se pueden almacenar conjuntamente con alimentos.</p>
+                <label><input type="radio" name="p23" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p23" value="f" /> Falso</label>
+
+                <p>24) Podemos conservar fuera del frigorífico un paquete de jamón cocido si está envasado al vacío.</p>
+                <label><input type="radio" name="p24" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p24" value="f" /> Falso</label>
+
+                <p>25) Se deben limpiar periódicamente las zonas de difícil acceso en cocinas y almacenes (tras el mobiliario, tras los lavavajillas, etc.), entre otras razones para evitar tener problemas con las cucarachas y otras plagas.</p>
+                <label><input type="radio" name="p25" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p25" value="f" /> Falso</label>
+
+                <p>26) Para saber qué bayeta utilizar en cada zona de cocina y en qué tabla cortar cada tipo de alimento, has de fijarte en el código de colores establecido.</p>
+                <label><input type="radio" name="p26" value="v" /> Verdadero</label>
+                <label><input type="radio" name="p26" value="f" /> Falso</label>
+              </fieldset>
+
+              <button type="submit">Enviar respuestas</button>
+            </form>
+            <div id="mensaje-exito" class="message success" role="status" aria-live="polite">
+              <h3>Resultado</h3>
+              <p id="message-text">Completa el cuestionario para comprobar si puedes guardar tu registro.</p>
+            </div>
+            <p id="form-status" class="status" role="status" aria-live="polite"></p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      async function updateAdminAccessButton() {
+        const button = document.getElementById('admin-access-button');
+        if (!button) return;
+        button.hidden = true;
+        try {
+          const response = await fetch('/api/session', { credentials: 'same-origin' });
+          if (!response.ok) {
+            return;
+          }
+          const data = await response.json();
+          if (data.user_role === 'admin') {
+            button.hidden = false;
+            button.style.display = 'inline-flex';
+          }
+        } catch (error) {
+          // keep hidden on failure
+        }
+      }
+      updateAdminAccessButton();
+    </script>
+    <script src="/script.js"></script>
+  </body>
+</html>
